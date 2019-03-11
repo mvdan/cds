@@ -55,7 +55,7 @@ func (api *API) getWorkflowHandler() service.Handler {
 		withTemplate := FormBool(r, "withTemplate")
 		withAsCodeEvents := FormBool(r, "withAsCodeEvents")
 
-		proj, err := project.Load(api.mustDB(), api.Cache, key, deprecatedGetUser(ctx), project.LoadOptions.WithIntegrations)
+		proj, err := project.Load(api.mustDB(), api.Cache, key, deprecatedGetUser(ctx), project.LoadOptions.WithIntegrations, project.LoadOptions.WithPipelines)
 		if err != nil {
 			return sdk.WrapError(err, "unable to load projet")
 		}

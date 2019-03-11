@@ -94,7 +94,7 @@ func (s *Service) synchronizeTasks() error {
 		confProj := h.Config[sdk.HookConfigProject]
 		confWorkflow := h.Config[sdk.HookConfigWorkflow]
 		if confProj.Value == "" || confWorkflow.Value == "" {
-			log.Error("Hook> Unable to synchronize task %+v: %v", h, err)
+			log.Error("Hook> Unable to synchronize task %+v, missing configuration: %v", h, err)
 			continue
 		}
 		t, err := s.hookToTask(&h)

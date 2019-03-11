@@ -21,7 +21,6 @@ func (api *API) getWorkflowHooksHandler() service.Handler {
 		if err != nil {
 			return sdk.WrapError(err, "getWorkflowHooksHandler")
 		}
-
 		return service.WriteJSON(w, hooks, http.StatusOK)
 	}
 }
@@ -46,7 +45,7 @@ func (api *API) getWorkflowHookModelsHandler() service.Handler {
 			return sdk.WrapError(errN, "getWorkflowHookModelsHandler")
 		}
 
-		p, errP := project.Load(api.mustDB(), api.Cache, key, deprecatedGetUser(ctx), project.LoadOptions.WithIntegrations)
+		p, errP := project.Load(api.mustDB(), api.Cache, key, deprecatedGetUser(ctx), project.LoadOptions.WithIntegrations, project.LoadOptions.WithPipelines)
 		if errP != nil {
 			return sdk.WrapError(errP, "getWorkflowHookModelsHandler > project.Load")
 		}

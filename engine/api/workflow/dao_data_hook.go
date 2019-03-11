@@ -3,7 +3,6 @@ package workflow
 import (
 	"database/sql"
 	"fmt"
-
 	"github.com/go-gorp/gorp"
 
 	"github.com/ovh/cds/engine/api/database/gorpmapping"
@@ -131,11 +130,16 @@ func (r *dbNodeHookData) PostGet(db gorp.SqlExecutor) error {
 // LoadAllHooks returns all hooks
 func LoadAllHooks(db gorp.SqlExecutor) ([]sdk.NodeHook, error) {
 	res := []dbNodeHookData{}
-	if _, err := db.Select(&res, "select * from workflow_node_hook"); err != nil {
+	if _, err := db.Select(&res, "select * from w_node_hook"); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
 		return nil, sdk.WrapError(err, "LoadAllHooks")
+	}
+
+	models, err := LoadHookModels(db)
+	if err != nil {
+		return nil, err
 	}
 
 	nodes := make([]sdk.NodeHook, 0, len(res))
@@ -143,6 +147,13 @@ func LoadAllHooks(db gorp.SqlExecutor) ([]sdk.NodeHook, error) {
 		if err := res[i].PostGet(db); err != nil {
 			return nil, sdk.WrapError(err, "LoadAllHooks")
 		}
+		for _, m := range models {
+			if m.ID == res[i].HookModelID {
+				res[i].HookModelName = m.Name
+				break
+			}
+		}
+
 		nodes = append(nodes, sdk.NodeHook(res[i]))
 	}
 
